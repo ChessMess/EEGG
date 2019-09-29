@@ -6,9 +6,9 @@ function _init()
  player = create_player()
  
 	tracelines={}
-	tracelines.line_len=120
-	tracelines.speed=2
 	tracelines.frames_to_load=10
+	tracelines.line_len=127 * tracelines.frames_to_load
+	tracelines.speed=2
 	
  lns=make_lines(40, tracelines.line_len)
  if(game.show_attract) then
