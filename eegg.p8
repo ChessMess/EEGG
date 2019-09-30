@@ -7,7 +7,7 @@ function _init()
  
 	tracelines={}
 	tracelines.frames_to_load=10
-	tracelines.line_len=127 * tracelines.frames_to_load
+	tracelines.line_len=128 * tracelines.frames_to_load
 	tracelines.speed=2
 	
  lns=make_lines(40, tracelines.line_len)
