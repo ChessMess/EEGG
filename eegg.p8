@@ -1,6 +1,7 @@
 pico-8 cartridge // http://www.pico-8.com
 version 18
 __lua__
+-- _init, _update, _draw
 function _init()
  game = create_gamestate()
  player = create_player()
@@ -37,7 +38,7 @@ end
 
 
 -->8
-// game state
+-- game state
 function create_gamestate()
  local game={}
  
@@ -99,7 +100,7 @@ end
 
 
 -->8
-// game screens
+-- game screens
 
 function scrn_attract_init()
 	scrn_attract()
@@ -114,6 +115,7 @@ end
 
 	
 -->8
+-- tracelines
 function make_lines(min_gap, len)
     top_line = {}
     add(top_line, { x = 0, y = rnd(127 - min_gap) })
@@ -150,7 +152,7 @@ function draw_lines(lns, start)
     draw_line(lns.bottom, start)
 end
 -->8
-// player
+-- player
 
 function create_player()
 	local player={}
