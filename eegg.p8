@@ -9,7 +9,7 @@ function _init()
  print("✽ flappy brain 0.01 alpha")
  print("generating traces...")
 	tracelines={}
-	tracelines.frames_to_load=25
+	tracelines.frames_to_load=15
 	tracelines.line_len=128 * tracelines.frames_to_load
 	tracelines.speed=2
 	
@@ -163,17 +163,25 @@ function create_player()
  player.x=64
  player.y=64
  player.sprite = 0
+ player.uplft={}
+ player.lwrgt={}
  
  player.update = function(self)
 	 if (btn(0)) self.x-=1 --left
 	 if (btn(1)) self.x+=1 --right
 	 if (btn(2)) self.y-=1 --up
 	 if (btn(3)) self.y+=1 --down
+	 player.toplft = {x= player.x+1, 
+	                  y= player.y+1}
+	 player.botrgt = {x= player.x+14,
+	                  y= player.y+11}
+
  end
  
  player.draw = function(self)
- 	spr(0,self.x,self.y,2,2)
+  spr(0,self.x,self.y,2,2)
  end
+ 
  
  return player
 end
