@@ -7,7 +7,7 @@ function _init()
  game = create_gamestate()
  player = create_player()
  cls()
- print("✽ flappy brain 0.01 alpha")
+ print("✽ brain runner 0.01 alpha")
  print("generating traces...")
 	tracelines={}
 	tracelines.frames_to_load=15
@@ -163,9 +163,10 @@ function create_player()
 	local player={}
  player.x=64
  player.y=64
- player.sprite = 0
+ player.sprite=0
  player.uplft={}
  player.lwrgt={}
+ player.damage=0
  
  player.update = function(self)
 	 if (btn(0)) self.x=max(0,self.x-1) --left
@@ -177,10 +178,22 @@ function create_player()
 	                  y= player.y+1}
 	 player.botrgt = {x= player.x+14,
 	                  y= player.y+11}
+ player:hitcheck()
+ end
+ 
+ player.hitcheck=function(self)
+  local p=0
+ 	for i=self.toplft.x, self.toplft.x+15 do
+			p = pget(i, self.toplft.y-1)	 
+ 		if (p>0)	then  
+ 			self.damage += 1
+ 		end
+ 	end
  end
  
  player.draw = function(self)
   spr(0,self.x,self.y,2,2)
+  print("damage:"..self.damage,25,5)
  end
  
  return player
