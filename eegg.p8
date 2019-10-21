@@ -5,16 +5,19 @@ __lua__
 
 function _init()
  game = create_gamestate()
- player = create_player()
+
  cls()
  print("✽ brain runner 0.01 alpha")
  print("generating traces...")
-	tracelines={}
-	tracelines.frames_to_load=15
-	tracelines.line_len=128 * tracelines.frames_to_load
-	tracelines.speed=2
+	traces={}
+	traces.frames_to_load=15
+	traces.line_len=128 * traces.frames_to_load
+	traces.speed=2
+	traces.min_gap=40
 	
- lns=make_lines(40, tracelines.line_len)
+ lns=make_lines(traces.min_gap,
+  traces.line_len)
+ player = create_player()
  
  music(1)
  if(game.show_attract) then
@@ -35,7 +38,7 @@ function _draw()
  	player:draw()
  	
  	--if(game.tick * game.speed < tracelines.line_len - 128) then
- 		draw_lines(lns, game.tick * tracelines.speed)
+ 		draw_lines(lns, game.tick * traces.speed)
  	--end
 	end
 end
@@ -161,34 +164,57 @@ end
 
 function create_player()
 	local player={}
- player.x=64
- player.y=64
+	local midpoint=(bottom_line[1].y - top_line[1].y) / 2
+	midpoint += top_line[1].y
+ player.x=24
+ player.y=midpoint
  player.sprite=0
- player.uplft={}
- player.lwrgt={}
- player.damage=0
+	player.damage=0
  
  player.update = function(self)
-	 if (btn(0)) self.x=max(0,self.x-1) --left
-	 if (btn(1)) self.x=min(111,self.x+1) --right
-	 if (btn(2)) self.y=max(0,self.y-1) --up
-	 if (btn(3)) self.y=min(243-player.botrgt.y,self.y+1) --down
-	 
-	 player.toplft = {x= player.x+1, 
+	 if (player:hitcheck()==false) then
+		 if (btn(0)) self.x=max(0,self.x-1) --left
+		 if (btn(1)) self.x=min(111,self.x+1) --right
+		 if (btn(2)) self.y=max(0,self.y-1) --up
+		 if (btn(3)) self.y=min(243-player.botrgt.y,self.y+1) --down
+  end
+		player:update_coordinates()		 
+	end
+  
+	player.update_coordinates = function(self)
+		player.toplft = {x= player.x+1, 
 	                  y= player.y+1}
 	 player.botrgt = {x= player.x+14,
 	                  y= player.y+11}
- player:hitcheck()
- end
+	end
+	
  
  player.hitcheck=function(self)
   local p=0
+  local collision=false
  	for i=self.toplft.x, self.toplft.x+15 do
 			p = pget(i, self.toplft.y-1)	 
  		if (p>0)	then  
  			self.damage += 1
+ 			self.y += 1
+ 			collision=true
+ 			break
  		end
  	end
+ 	
+		for i=self.botrgt.x-15, self.botrgt.x do
+			p = pget(i, self.botrgt.y+1)	 
+ 		if (p>0)	then  
+ 			self.damage += 1
+ 			self.y -= 1
+ 			collision=true
+ 			break
+ 		end
+ 	end
+
+		if (self.y<0) self.y=0
+		if (self.y>112) self.y=112 	 	
+ 	return collision
  end
  
  player.draw = function(self)
@@ -196,6 +222,8 @@ function create_player()
   print("damage:"..self.damage,25,5)
  end
  
+ player:update_coordinates()
+
  return player
 end
 __gfx__
